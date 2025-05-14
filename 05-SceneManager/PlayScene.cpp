@@ -129,11 +129,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_begin = atoi(tokens[6].c_str());
 		int sprite_middle = atoi(tokens[7].c_str());
 		int sprite_end = atoi(tokens[8].c_str());
+		int isBlocking = atoi(tokens[9].c_str());
 
 		obj = new CPlatform(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end
+			sprite_begin, sprite_middle, sprite_end, isBlocking
 		);
 
 		break;
