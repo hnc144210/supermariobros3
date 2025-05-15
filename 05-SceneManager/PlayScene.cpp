@@ -9,7 +9,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
-
+#include "Pipe.h"
 #include "SampleKeyEventHandler.h"
 
 using namespace std;
@@ -139,7 +139,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		break;
 	}
-
+	case OBJECT_TYPE_PIPE:
+	{
+		obj = new CPipe(x, y);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
