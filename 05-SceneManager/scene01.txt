@@ -6,6 +6,7 @@ platform.txt
 coin.txt
 pipe.txt
 mistery-block.txt
+paragoomba.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -108,6 +109,9 @@ mistery-block.txt
 7	656	162
 
 7	704	128
+
+#PARAGOOMBA
+8	880	160
 
 #ĐẤT
 5	0	192	16	16	39	1000000	1000100	1000200	1

@@ -12,6 +12,8 @@
 #include "Pipe.h"
 #include "SampleKeyEventHandler.h"
 #include "MisteryBlock.h"
+#include "Goomba.h"
+#include "Paragoomba.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -149,7 +151,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CMisteryBlock(x, y);
 		break;
 	}
-		
+	case OBJECT_TYPE_PARAGOOMBA:
+	{
+		obj = new CParaGoomba(x, y);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
