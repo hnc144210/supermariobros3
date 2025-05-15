@@ -95,35 +95,40 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithParagomba(LPCOLLISIONEVENT e)
 {
 	CParaGoomba* paraGoomba = dynamic_cast<CParaGoomba*>(e->obj);
-	// jump on top >> kill Goomba and deflect a bit 
+	if (!paraGoomba) return;
+
 	if (e->ny < 0)
 	{
-		if (paraGoomba->GetState() != PARAGOOMBA_STATE_DIE)
+		int state = paraGoomba->GetState();
+		if (state == PARAGOOMBA_STATE_WALKING)
+		{
+			paraGoomba->SetState(PARAGOOMBA_STATE_NO_WING);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else if (state == PARAGOOMBA_STATE_NO_WING)
 		{
 			paraGoomba->SetState(PARAGOOMBA_STATE_DIE);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
-	else // hit by Goomba
+	else 
 	{
-		if (untouchable == 0)
+		if (untouchable == 0 && paraGoomba->GetState() != PARAGOOMBA_STATE_DIE)
 		{
-			if (paraGoomba->GetState() != PARAGOOMBA_STATE_DIE)
+			if (level > MARIO_LEVEL_SMALL)
 			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else
+			{
+				DebugOut(L">>> Mario DIE >>> \n");
+				SetState(MARIO_STATE_DIE);
 			}
 		}
 	}
 }
+
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
