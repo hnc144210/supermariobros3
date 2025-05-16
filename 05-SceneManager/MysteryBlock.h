@@ -12,15 +12,22 @@
 #define ID_ANI_MYSTERYBLOCK 13000
 #define ID_ANI_MYSTERYBLOCK_UNBOXED 13001
 
+#define ITEM_TYPE_COIN 1
+#define ITEM_TYPE_MUSHROOM 2
+
+
 class CMysteryBlock : public CGameObject {
 	bool isUsed = false;
 	float ax, ay;
 	float startY;
+	int itemType;
 public:
-	CMysteryBlock(float x, float y) : CGameObject(x, y) {
+	CMysteryBlock(float x, float y, int itemType = ITEM_TYPE_COIN) : CGameObject(x, y) {
 		ax = ay = 0;
 		startY = y;
+		this->itemType = itemType;
 	}
+	
 	int IsCollidable() override { return 0; }
 	int IsBlocking() override { return 1; }
 

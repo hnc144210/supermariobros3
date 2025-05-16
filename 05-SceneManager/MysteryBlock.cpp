@@ -1,6 +1,7 @@
 #include "MysteryBlock.h"
 #include "PlayScene.h"
 #include "Coin.h"
+#include "Mushroom.h"
 
 void CMysteryBlock::Render() {
 	int aniId = ID_ANI_MYSTERYBLOCK;
@@ -48,9 +49,17 @@ void CMysteryBlock::SetState(int state) {
 		isUsed = true;
 		LPGAME game = CGame::GetInstance();
 		LPPLAYSCENE scene = (LPPLAYSCENE)game->GetCurrentScene();
-		CCoin* coin = new CCoin(x, y - 16);
-		coin->SetState(COIN_STATE_ARISE);
-		scene->AddObject(coin);
+		if (itemType == ITEM_TYPE_COIN) {
+			CCoin* coin = new CCoin(x, y - 16);
+			coin->SetState(COIN_STATE_ARISE);
+			scene->AddObject(coin);
+		}
+		else if (itemType == ITEM_TYPE_MUSHROOM) {
+			CMushroom* mushroom = new CMushroom(x, y - 32);
+			mushroom->SetState(MUSHROOM_STATE_MOVE);
+			scene->AddObject(mushroom);
+		}
+
 		break;
 	}
 	case MYSTERYBLOCK_STATE_UNBOXED:

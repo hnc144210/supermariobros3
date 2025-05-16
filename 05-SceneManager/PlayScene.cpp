@@ -12,6 +12,7 @@
 #include "Pipe.h"
 #include "SampleKeyEventHandler.h"
 #include "MysteryBlock.h"
+#include "Mushroom.h"
 #include "Goomba.h"
 #include "Paragoomba.h"
 using namespace std;
@@ -146,9 +147,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPipe(x, y);
 		break;
 	}
-	case OBJECT_TYPE_MISTERYBLOCK:
+	case OBJECT_TYPE_MYSTERYBLOCK:
 	{
-		obj = new CMysteryBlock(x, y);
+		int item = ITEM_TYPE_COIN;
+		if (tokens.size() > 3)
+			item = atoi(tokens[3].c_str());
+		obj = new CMysteryBlock(x, y, item);
 		break;
 	}
 	case OBJECT_TYPE_PARAGOOMBA:
@@ -156,6 +160,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CParaGoomba(x, y);
 		break;
 	}
+	case OBJECT_TYPE_MUSHROOM:
+	{
+		obj = new CMushroom(x, y);
+		break;
+
+	}
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
