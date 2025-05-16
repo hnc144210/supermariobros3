@@ -17,6 +17,7 @@
 #include "Paragoomba.h"
 #include "PiranhaPlant.h"
 #include "Bullet.h"
+#include "Koopas.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -178,6 +179,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBullet(x, y, 0, 0);
 		break;
 	}
+
+	case OBJECT_TYPE_KOOPAS:
+	{
+		obj = new CKoopas(x, y);
+		break;
+	}
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
