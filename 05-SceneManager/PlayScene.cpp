@@ -15,6 +15,7 @@
 #include "Mushroom.h"
 #include "Goomba.h"
 #include "Paragoomba.h"
+#include "PiranhaPlant.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -166,7 +167,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 
 	}
-
+	case OBJECT_TYPE_PIRANHAPLANT:
+	{
+		obj = new CPiranhaPlant(x, y);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());

@@ -1,1 +1,74 @@
 #include "PiranhaPlant.h"
+#include "Animations.h"
+#include "Game.h"
+#include "PlayScene.h"
+#include "Mario.h"
+
+CPiranhaPlant::CPiranhaPlant(float x, float y) : CGameObject(x, y) {
+    this->startY = y;
+    this->state_start = GetTickCount();
+    this->isRising = true;
+    SetState(PIRANHA_STATE_RISE);
+}
+
+void CPiranhaPlant::GetBoundingBox(float& l, float& t, float& r, float& b) {
+    l = x - PIRANHA_BBOX_WIDTH / 2;
+    t = y - PIRANHA_BBOX_HEIGHT;
+    r = l + PIRANHA_BBOX_WIDTH;
+    b = t + PIRANHA_BBOX_HEIGHT;
+}
+
+void CPiranhaPlant::Render() {
+    int aniId = ID_ANI_PIRANHA_LEFT_BOTTOM;
+
+    LPGAME game = CGame::GetInstance();
+    CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
+    float mx, my;
+    mario->GetPosition(mx, my);
+
+    if (mx < x) {
+        aniId = (my < y) ? ID_ANI_PIRANHA_LEFT_TOP : ID_ANI_PIRANHA_LEFT_BOTTOM;
+    }
+    else {
+        aniId = (my < y) ? ID_ANI_PIRANHA_RIGHT_TOP : ID_ANI_PIRANHA_RIGHT_BOTTOM;
+    }
+
+    CAnimations::GetInstance()->Get(aniId)->Render(x, y);
+}
+
+void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
+    if (state == PIRANHA_STATE_RISE) {
+        y -= PIRANHA_RISE_SPEED * dt;
+        if (y <= startY - PIRANHA_RISE_HEIGHT) {
+            y = startY - PIRANHA_RISE_HEIGHT;
+            if (GetTickCount() - state_start > PIRANHA_WAIT_TIME) {
+                state_start = GetTickCount();
+                SetState(PIRANHA_STATE_HIDE);
+            }
+        }
+    }
+    else if (state == PIRANHA_STATE_HIDE) {
+        y += PIRANHA_RISE_SPEED * dt;
+        if (y >= startY) {
+            y = startY;
+            if (GetTickCount() - state_start > PIRANHA_WAIT_TIME) {
+                state_start = GetTickCount();
+                SetState(PIRANHA_STATE_RISE);
+            }
+        }
+    }
+}
+
+
+void CPiranhaPlant::SetState(int state) {
+    CGameObject::SetState(state);
+    switch (state) {
+    case PIRANHA_STATE_RISE:
+        isRising = true;
+        break;
+    case PIRANHA_STATE_HIDE:
+        isRising = false;
+        break;
+    }
+}

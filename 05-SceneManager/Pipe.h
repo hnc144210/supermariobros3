@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 #define PIPE_BBOX_WIDTH 32
-#define PIPE_BBOX_HEIGHT 32
+#define PIPE_BBOX_HEIGHT 48
 
 #define ID_ANI_PIPE 12000
 
