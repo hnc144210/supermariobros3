@@ -15,3 +15,33 @@ void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 	r = l + COIN_BBOX_WIDTH;
 	b = t + COIN_BBOX_HEIGHT;
 }
+
+void CCoin::OnNoCollision(DWORD dt) {
+	x += vx * dt;
+	y += vy * dt;
+}
+
+void CCoin::Update(DWORD dt, std::vector<LPGAMEOBJECT>* coObjects) {
+	vx += ax * dt;
+	vy += ay * dt;
+
+	if (GetTickCount64() - bornTime >= COIN_TIME_OUT) {
+		this->Delete();
+	}
+
+	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void CCoin::SetState(int state) {
+	CGameObject::SetState(state);
+
+	switch (state) {
+	case COIN_STATE_ARISE:
+	{
+		vy = -COIN_SPEED;
+		ay = COIN_GRAVITY;
+		bornTime = GetTickCount64();
+		break;
+	}
+	}
+}

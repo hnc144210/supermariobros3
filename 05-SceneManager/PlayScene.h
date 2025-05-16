@@ -6,6 +6,11 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
+#include "Coin.h"
+#include "Pipe.h"
+#include "MysteryBlock.h"
+#include "Paragoomba.h"
+
 //#include "Koopas.h"
 
 
@@ -16,7 +21,6 @@ protected:
 	LPGAMEOBJECT player;					
 
 	vector<LPGAMEOBJECT> objects;
-
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 
@@ -26,12 +30,13 @@ protected:
 	void LoadAssets(LPCWSTR assetFile);
 	
 public: 
-	CPlayScene(int id, LPCWSTR filePath);
 
+	CPlayScene(int id, LPCWSTR filePath);
 	virtual void Load();
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	void AddObject(LPGAMEOBJECT obj);
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

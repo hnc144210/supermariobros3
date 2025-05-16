@@ -117,7 +117,8 @@ class CMario : public CGameObject
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
-	void OnCollisionWithParagomba(LPCOLLISIONEVENT e);
+	void OnCollisionWithParagoomba(LPCOLLISIONEVENT e);
+	void OnCollisionWithMysteryBlock(LPCOLLISIONEVENT e);
 	int GetAniIdBig();
 	int GetAniIdSmall();
 

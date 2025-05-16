@@ -11,7 +11,7 @@
 #include "Platform.h"
 #include "Pipe.h"
 #include "SampleKeyEventHandler.h"
-#include "MisteryBlock.h"
+#include "MysteryBlock.h"
 #include "Goomba.h"
 #include "Paragoomba.h"
 using namespace std;
@@ -23,7 +23,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	key_handler = new CSampleKeyHandler(this);
 }
 
-
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
@@ -33,6 +32,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define ASSETS_SECTION_ANIMATIONS 2
 
 #define MAX_SCENE_LINE 1024
+
 
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
@@ -148,7 +148,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_MISTERYBLOCK:
 	{
-		obj = new CMisteryBlock(x, y);
+		obj = new CMysteryBlock(x, y);
 		break;
 	}
 	case OBJECT_TYPE_PARAGOOMBA:
@@ -211,6 +211,10 @@ void CPlayScene::LoadAssets(LPCWSTR assetFile)
 	f.close();
 
 	DebugOut(L"[INFO] Done loading assets from %s\n", assetFile);
+}
+void CPlayScene::AddObject(LPGAMEOBJECT obj)
+{
+	objects.push_back(obj);
 }
 
 void CPlayScene::Load()

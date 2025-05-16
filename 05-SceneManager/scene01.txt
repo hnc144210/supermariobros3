@@ -5,8 +5,10 @@ brick.txt
 platform.txt
 coin.txt
 pipe.txt
-mistery-block.txt
+mysteryblock.txt
 paragoomba.txt
+piranhaplant.txt
+koopas.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

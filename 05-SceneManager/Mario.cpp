@@ -8,9 +8,9 @@
 #include "Coin.h"
 #include "Portal.h"
 #include "ParaGoomba.h"
-
+#include "MysteryBlock.h"
 #include "Collision.h"
-
+#include "PlayScene.h"
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
@@ -55,7 +55,9 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CParaGoomba*>(e->obj))
-		OnCollisionWithParagomba(e);
+		OnCollisionWithParagoomba(e);
+	else if (dynamic_cast<CMysteryBlock*>(e->obj))
+		OnCollisionWithMysteryBlock(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -92,7 +94,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 }
 
-void CMario::OnCollisionWithParagomba(LPCOLLISIONEVENT e)
+void CMario::OnCollisionWithParagoomba(LPCOLLISIONEVENT e)
 {
 	CParaGoomba* paraGoomba = dynamic_cast<CParaGoomba*>(e->obj);
 	if (!paraGoomba) return;
@@ -129,6 +131,15 @@ void CMario::OnCollisionWithParagomba(LPCOLLISIONEVENT e)
 	}
 }
 
+void CMario::OnCollisionWithMysteryBlock(LPCOLLISIONEVENT e) {
+	CMysteryBlock* block = dynamic_cast<CMysteryBlock*>(e->obj);
+	if (!block) return;
+
+	if (e->ny > 0 && !block->IsUsed())
+	{
+		block->SetState(MYSTERYBLOCK_STATE_UNBOX);
+	}
+}
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
