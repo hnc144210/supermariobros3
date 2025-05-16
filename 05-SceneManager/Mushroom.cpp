@@ -30,13 +30,7 @@ void CMushroom::GetBoundingBox(float& l, float& t, float& r, float& b) {
 }
 
 void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e) {
-    if (dynamic_cast<CMario*>(e->obj)) {
-        CMario* mario = dynamic_cast<CMario*>(e->obj);
-
-        mario->SetLevel(MARIO_LEVEL_BIG);
-         isUsed = true;
-    }
-    else if (e->ny != 0) {
+   if (e->ny != 0) {
         vy = 0;
     }
     else if (e->nx != 0) {

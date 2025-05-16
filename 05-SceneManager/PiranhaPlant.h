@@ -5,7 +5,7 @@
 #define PIRANHA_BBOX_HEIGHT       24
 
 #define PIRANHA_RISE_SPEED        0.05f
-#define PIRANHA_WAIT_TIME         2000
+#define PIRANHA_WAIT_TIME         3000
 
 #define PIRANHA_STATE_RISE        100
 #define PIRANHA_STATE_HIDE        200
@@ -21,10 +21,11 @@ protected:
     float startY;
     DWORD state_start;
     bool isRising;
-
+    int type;
+    bool isShooting = false;
 public:
     CPiranhaPlant(float x, float y);
-
+    void ShootBullet();
     void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
     void Render() override;
     void GetBoundingBox(float& l, float& t, float& r, float& b) override;

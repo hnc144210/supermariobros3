@@ -3,12 +3,13 @@
 #include "Game.h"
 #include "PlayScene.h"
 #include "Mario.h"
-
+#include "Bullet.h"
 CPiranhaPlant::CPiranhaPlant(float x, float y) : CGameObject(x, y) {
     this->startY = y;
     this->state_start = GetTickCount();
     this->isRising = true;
-    SetState(PIRANHA_STATE_RISE);
+    SetState(PIRANHA_STATE_HIDE);
+    state_start = GetTickCount();
 }
 
 void CPiranhaPlant::GetBoundingBox(float& l, float& t, float& r, float& b) {
@@ -42,8 +43,14 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
         y -= PIRANHA_RISE_SPEED * dt;
         if (y <= startY - PIRANHA_RISE_HEIGHT) {
             y = startY - PIRANHA_RISE_HEIGHT;
+
+            if (!isShooting) {
+                ShootBullet();
+            }
+
             if (GetTickCount() - state_start > PIRANHA_WAIT_TIME) {
                 state_start = GetTickCount();
+                isShooting = false;
                 SetState(PIRANHA_STATE_HIDE);
             }
         }
@@ -52,13 +59,26 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
         y += PIRANHA_RISE_SPEED * dt;
         if (y >= startY) {
             y = startY;
-            if (GetTickCount() - state_start > PIRANHA_WAIT_TIME) {
-                state_start = GetTickCount();
-                SetState(PIRANHA_STATE_RISE);
+
+            LPGAME game = CGame::GetInstance();
+            LPPLAYSCENE scene = (LPPLAYSCENE)game->GetCurrentScene();
+            CMario* mario = dynamic_cast<CMario*>(scene->GetPlayer());
+
+            float marioX, marioY;
+            mario->GetPosition(marioX, marioY);
+
+            float dx = abs(marioX - x);
+            if (dx <= 150.0f) {
+                if (GetTickCount() - state_start > PIRANHA_WAIT_TIME) {
+                    state_start = GetTickCount();
+                    SetState(PIRANHA_STATE_RISE);
+                }
             }
         }
     }
+
 }
+
 
 
 void CPiranhaPlant::SetState(int state) {
@@ -71,4 +91,21 @@ void CPiranhaPlant::SetState(int state) {
         isRising = false;
         break;
     }
+}
+void CPiranhaPlant::ShootBullet() {
+    LPGAME      game = CGame::GetInstance();
+    LPPLAYSCENE scene = (LPPLAYSCENE)game->GetCurrentScene();
+    CMario* mario = dynamic_cast<CMario*>(scene->GetPlayer());
+    if (!mario) return;
+
+    float marioX, marioY;
+    mario->GetPosition(marioX, marioY);
+
+    float bx = x;
+    float by = y - (PIRANHA_BBOX_HEIGHT / 2.0f);
+
+    CBullet* bullet = new CBullet(bx, by, marioX, marioY);
+    scene->AddObject(bullet);
+
+    isShooting = true;
 }

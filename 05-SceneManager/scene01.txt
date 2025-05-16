@@ -11,6 +11,7 @@ mushroom.txt
 piranhaplant.txt
 koopas.txt
 goomba.txt
+bullet.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type

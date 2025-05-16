@@ -12,6 +12,7 @@
 #include "Collision.h"
 #include "PlayScene.h"
 #include "Mushroom.h"
+#include "Bullet.h"
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
@@ -59,6 +60,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithParagoomba(e);
 	else if (dynamic_cast<CMysteryBlock*>(e->obj))
 		OnCollisionWithMysteryBlock(e);
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<CBullet*>(e->obj))
+		OnCollisionWithBullet(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -156,6 +161,29 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 		SetLevel(MARIO_LEVEL_BIG);
 	}
 }
+void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e) {
+	CBullet* bullet = dynamic_cast<CBullet*>(e->obj);
+
+	if (level > MARIO_LEVEL_BIG)
+	{
+		level = MARIO_LEVEL_BIG;
+		StartUntouchable();
+	}
+	else if (level > MARIO_LEVEL_SMALL)
+	{
+		level = MARIO_LEVEL_SMALL;
+		StartUntouchable();
+	}
+	else
+	{
+		SetState(MARIO_STATE_DIE);
+	}
+
+	bullet->Delete();
+}
+
+
+
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;

@@ -16,6 +16,7 @@
 #include "Goomba.h"
 #include "Paragoomba.h"
 #include "PiranhaPlant.h"
+#include "Bullet.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -170,6 +171,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_PIRANHAPLANT:
 	{
 		obj = new CPiranhaPlant(x, y);
+		break;
+	}
+	case OBJECT_TYPE_BULLET:
+	{
+		obj = new CBullet(x, y, 0, 0);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:

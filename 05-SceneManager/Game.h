@@ -82,6 +82,7 @@ public:
 
 	LPTEXTURE LoadTexture(LPCWSTR texturePath);
 
+
 	// Keyboard related functions 
 	void InitKeyboard();
 	int IsKeyDown(int KeyCode);
