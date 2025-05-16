@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include "debug.h"
 
 #include "Mario.h"
@@ -14,7 +14,8 @@
 #include "Mushroom.h"
 #include "Bullet.h"
 #include "PiranhaPlant.h"
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+#include "Koopas.h"
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
@@ -22,13 +23,22 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
-	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
+	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
 	}
 
+	if (holdingKoopas)
+	{
+		float holdX = x + nx * KOOPAS_HOLD_OFFSET_X;
+		float holdY = y - KOOPAS_HOLD_OFFSET_Y;
+		holdingKoopas->SetPosition(holdX, holdY);
+	}
+
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+
+	ReleaseKoopas();
 }
 
 void CMario::OnNoCollision(DWORD dt)
@@ -45,11 +55,11 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vy = 0;
 		if (e->ny < 0) isOnPlatform = true;
 	}
-	else 
-	if (e->nx != 0 && e->obj->IsBlocking())
-	{
-		vx = 0;
-	}
+	else
+		if (e->nx != 0 && e->obj->IsBlocking())
+		{
+			vx = 0;
+		}
 
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
@@ -67,6 +77,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithBullet(e);
 	else if (dynamic_cast<CPiranhaPlant*>(e->obj))
 		OnCollisionWithPiranhaPlant(e);
+	else if (dynamic_cast<CKoopas*>(e->obj))
+		OnCollisionWithKoopas(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -122,7 +134,7 @@ void CMario::OnCollisionWithParagoomba(LPCOLLISIONEVENT e)
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
-	else 
+	else
 	{
 		if (untouchable == 0 && paraGoomba->GetState() != PARAGOOMBA_STATE_DIE)
 		{
@@ -196,6 +208,96 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e) {
 	else
 	{
 		SetState(MARIO_STATE_DIE);
+	}
+}
+
+
+void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e)
+{
+	CKoopas* koopa = dynamic_cast<CKoopas*>(e->obj);
+	if (!koopa) return;
+
+	if (holdingKoopas == koopa)
+		return;
+
+	if (e->ny < 0)
+	{
+		if (koopa->IsSpinning())
+		{
+			koopa->SetState(KOOPAS_STATE_SHELL);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else
+		{
+			koopa->OnStomp();
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	else if (e->nx != 0)
+	{
+		if (!koopa->IsDefend())
+		{
+			if (untouchable == 0)
+			{
+				if (level > MARIO_LEVEL_SMALL)
+				{
+					SetLevel(MARIO_LEVEL_SMALL);
+					StartUntouchable();
+				}
+				else
+				{
+					SetState(MARIO_STATE_DIE);
+				}
+			}
+		}
+		else
+		{
+			if (koopa->IsSpinning())
+			{
+				if (untouchable == 0)
+				{
+					if (level > MARIO_LEVEL_SMALL)
+					{
+						SetLevel(MARIO_LEVEL_SMALL);
+						StartUntouchable();
+					}
+					else
+					{
+						SetState(MARIO_STATE_DIE);
+					}
+				}
+			}
+			else
+			{
+				LPGAME game = CGame::GetInstance();
+				if (game->IsKeyDown(DIK_A))
+				{
+					HoldKoopas(koopa);
+				}
+				else
+				{
+					koopa->OnKick(vx);
+				}
+			}
+		}
+	}
+}
+
+void CMario::HoldKoopas(CKoopas* koopa)
+{
+	holdingKoopas = koopa;
+	koopa->SetState(KOOPAS_STATE_HELD);
+	koopa->SetHeld(true);
+}
+
+void CMario::ReleaseKoopas()
+{
+	if (holdingKoopas && !CGame::GetInstance()->IsKeyDown(DIK_A))
+	{
+		holdingKoopas->SetState(KOOPAS_STATE_SPINNING);
+		holdingKoopas->OnReleased(nx);
+		holdingKoopas->SetHeld(false);
+		holdingKoopas = nullptr;
 	}
 }
 
@@ -343,14 +445,14 @@ void CMario::Render()
 	animations->Get(aniId)->Render(x, y);
 
 	//RenderBoundingBox();
-	
+
 	DebugOutTitle(L"Coins: %d", coin);
 }
 
 void CMario::SetState(int state)
 {
 	// DIE is the end state, cannot be changed! 
-	if (this->state == MARIO_STATE_DIE) return; 
+	if (this->state == MARIO_STATE_DIE) return;
 
 	switch (state)
 	{
@@ -399,7 +501,7 @@ void CMario::SetState(int state)
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
 			vx = 0; vy = 0.0f;
-			y +=MARIO_SIT_HEIGHT_ADJUST;
+			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -427,9 +529,9 @@ void CMario::SetState(int state)
 	CGameObject::SetState(state);
 }
 
-void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
+void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (level==MARIO_LEVEL_BIG)
+	if (level == MARIO_LEVEL_BIG)
 	{
 		if (isSitting)
 		{
@@ -438,18 +540,18 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 			right = left + MARIO_BIG_SITTING_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_SITTING_BBOX_HEIGHT;
 		}
-		else 
+		else
 		{
-			left = x - MARIO_BIG_BBOX_WIDTH/2;
-			top = y - MARIO_BIG_BBOX_HEIGHT/2;
+			left = x - MARIO_BIG_BBOX_WIDTH / 2;
+			top = y - MARIO_BIG_BBOX_HEIGHT / 2;
 			right = left + MARIO_BIG_BBOX_WIDTH;
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		}
 	}
 	else
 	{
-		left = x - MARIO_SMALL_BBOX_WIDTH/2;
-		top = y - MARIO_SMALL_BBOX_HEIGHT/2;
+		left = x - MARIO_SMALL_BBOX_WIDTH / 2;
+		top = y - MARIO_SMALL_BBOX_HEIGHT / 2;
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
