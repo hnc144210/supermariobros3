@@ -14,6 +14,7 @@
 
 #define ITEM_TYPE_COIN 1
 #define ITEM_TYPE_MUSHROOM 2
+#define ITEM_TYPE_LEAF 3
 
 
 class CMysteryBlock : public CGameObject {
@@ -27,7 +28,7 @@ public:
 		startY = y;
 		this->itemType = itemType;
 	}
-	
+
 	int IsCollidable() override { return 0; }
 	int IsBlocking() override { return 1; }
 

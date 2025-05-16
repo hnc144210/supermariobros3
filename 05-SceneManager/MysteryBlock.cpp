@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 #include "Coin.h"
 #include "Mushroom.h"
+#include "Leaf.h"
 
 void CMysteryBlock::Render() {
 	int aniId = ID_ANI_MYSTERYBLOCK;
@@ -58,6 +59,11 @@ void CMysteryBlock::SetState(int state) {
 			CMushroom* mushroom = new CMushroom(x, y - 32);
 			mushroom->SetState(MUSHROOM_STATE_MOVE);
 			scene->AddObject(mushroom);
+		}
+		else if (itemType == ITEM_TYPE_LEAF) {
+			CLeaf* leaf = new CLeaf(x, y - 12);
+			leaf->SetState(LEAF_STATE_ARISE);
+			scene->AddObject(leaf);
 		}
 
 		break;

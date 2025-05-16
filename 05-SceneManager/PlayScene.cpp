@@ -18,6 +18,7 @@
 #include "PiranhaPlant.h"
 #include "Bullet.h"
 #include "Koopas.h"
+#include "Leaf.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -183,6 +184,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_KOOPAS:
 	{
 		obj = new CKoopas(x, y);
+		break;
+	}
+	case OBJECT_TYPE_LEAF:
+	{
+		obj = new CLeaf(x, y);
 		break;
 	}
 

@@ -12,6 +12,7 @@ piranhaplant.txt
 koopas.txt
 goomba.txt
 bullet.txt
+leaf.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -99,6 +100,9 @@ bullet.txt
 5	512	160	16	16	6	1060000	1060100	1060200	1
 5	512	176	16	16	6	1060700	1060900	1061000	0
 
+#
+1	628	186
+
 #PIRANHAPLANT
 9	352	154
 
@@ -114,7 +118,7 @@ bullet.txt
 
 7	384	88	1
 
-7	656	162	1
+7	656	162	3
 
 7	704	128	1
 
@@ -128,7 +132,7 @@ bullet.txt
 2	816	160
 
 #KOOPAS
-3	538	136
+3	588	132
 
 #ĐẤT
 5	0	192	16	16	39	1000000	1000100	1000200	1
