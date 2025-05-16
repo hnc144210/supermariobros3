@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 #define PIRANHA_BBOX_WIDTH        16
-#define PIRANHA_BBOX_HEIGHT       24
+#define PIRANHA_BBOX_HEIGHT       33
 
 #define PIRANHA_RISE_SPEED        0.05f
 #define PIRANHA_WAIT_TIME         3000
@@ -30,4 +30,5 @@ public:
     void Render() override;
     void GetBoundingBox(float& l, float& t, float& r, float& b) override;
     void SetState(int state) override;
+    int IsCollidable() override;
 };

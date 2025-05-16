@@ -121,6 +121,7 @@ class CMario : public CGameObject
 	void OnCollisionWithMysteryBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
 	void OnCollisionWithBullet(LPCOLLISIONEVENT e);
+	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
 	int GetAniIdBig();
 	int GetAniIdSmall();
 

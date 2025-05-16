@@ -13,11 +13,21 @@ CPiranhaPlant::CPiranhaPlant(float x, float y) : CGameObject(x, y) {
 }
 
 void CPiranhaPlant::GetBoundingBox(float& l, float& t, float& r, float& b) {
+    if (state == PIRANHA_STATE_HIDE) {
+        l = t = r = b = 0.0f;
+        return;
+    }
+
     l = x - PIRANHA_BBOX_WIDTH / 2;
-    t = y - PIRANHA_BBOX_HEIGHT;
+    t = y - PIRANHA_BBOX_HEIGHT / 2;
     r = l + PIRANHA_BBOX_WIDTH;
     b = t + PIRANHA_BBOX_HEIGHT;
 }
+
+int CPiranhaPlant::IsCollidable() {
+    return y < startY ? 1 : 0;
+}
+
 
 void CPiranhaPlant::Render() {
     int aniId = ID_ANI_PIRANHA_LEFT_BOTTOM;
@@ -78,7 +88,6 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
     }
 
 }
-
 
 
 void CPiranhaPlant::SetState(int state) {

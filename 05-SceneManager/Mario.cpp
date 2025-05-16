@@ -13,6 +13,7 @@
 #include "PlayScene.h"
 #include "Mushroom.h"
 #include "Bullet.h"
+#include "PiranhaPlant.h"
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
@@ -64,6 +65,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushroom(e);
 	else if (dynamic_cast<CBullet*>(e->obj))
 		OnCollisionWithBullet(e);
+	else if (dynamic_cast<CPiranhaPlant*>(e->obj))
+		OnCollisionWithPiranhaPlant(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -155,7 +158,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
 	if (!mushroom) return;
-	if (e->ny > 0 && !mushroom->IsUsed())
+	if (!mushroom->IsUsed())
 	{
 		mushroom->SetState(MUSHROOM_STATE_EATEN);
 		SetLevel(MARIO_LEVEL_BIG);
@@ -182,7 +185,19 @@ void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e) {
 	bullet->Delete();
 }
 
-
+void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e) {
+	CPiranhaPlant* piranhaplant = dynamic_cast<CPiranhaPlant*>(e->obj);
+	if (untouchable) return;
+	if (level > MARIO_LEVEL_SMALL)
+	{
+		level = MARIO_LEVEL_SMALL;
+		StartUntouchable();
+	}
+	else
+	{
+		SetState(MARIO_STATE_DIE);
+	}
+}
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
