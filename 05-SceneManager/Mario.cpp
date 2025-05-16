@@ -11,6 +11,7 @@
 #include "MysteryBlock.h"
 #include "Collision.h"
 #include "PlayScene.h"
+#include "Mushroom.h"
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
@@ -145,7 +146,16 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	e->obj->Delete();
 	coin++;
 }
-
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	CMushroom* mushroom = dynamic_cast<CMushroom*>(e->obj);
+	if (!mushroom) return;
+	if (e->ny > 0 && !mushroom->IsUsed())
+	{
+		mushroom->SetState(MUSHROOM_STATE_EATEN);
+		SetLevel(MARIO_LEVEL_BIG);
+	}
+}
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
