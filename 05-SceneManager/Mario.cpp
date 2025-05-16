@@ -15,6 +15,8 @@
 #include "Bullet.h"
 #include "PiranhaPlant.h"
 #include "Koopas.h"
+#include "Leaf.h"
+
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
@@ -79,6 +81,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithPiranhaPlant(e);
 	else if (dynamic_cast<CKoopas*>(e->obj))
 		OnCollisionWithKoopas(e);
+	else if (dynamic_cast<CLeaf*>(e->obj))
+		OnCollisionWithLeaf(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -211,6 +215,12 @@ void CMario::OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e) {
 	}
 }
 
+void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e) {
+	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
+	SetLevel(MARIO_LEVEL_FLY);
+
+	leaf->Delete();
+}
 
 void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e)
 {
@@ -430,6 +440,59 @@ int CMario::GetAniIdBig()
 	return aniId;
 }
 
+int CMario::GetAniIdFly() {
+	int aniId = -1;
+
+	if (!isOnPlatform)
+	{
+		if (isFlying)
+		{
+			aniId = (nx > 0) ? ID_ANI_MARIO_FLY_RIGHT : ID_ANI_MARIO_FLY_LEFT;
+		}
+		else if (abs(ax) == MARIO_ACCEL_RUN_X)
+		{
+			aniId = (nx > 0) ? ID_ANI_MARIO_FLY_JUMP_RIGHT : ID_ANI_MARIO_FLY_JUMP_LEFT;
+		}
+		else
+		{
+			aniId = (nx > 0) ? ID_ANI_MARIO_FLY_JUMP_RIGHT : ID_ANI_MARIO_FLY_JUMP_LEFT;
+		}
+	}
+	else {
+		if (isSitting)
+		{
+			aniId = (nx > 0) ? ID_ANI_MARIO_FLY_SIT_RIGHT : ID_ANI_MARIO_FLY_SIT_LEFT;
+		}
+		else {
+			if (vx == 0)
+			{
+				aniId = (nx > 0) ? ID_ANI_MARIO_FLY_IDLE_RIGHT : ID_ANI_MARIO_FLY_IDLE_LEFT;
+			}
+			else if (vx > 0)
+			{
+				if (ax < 0)
+					aniId = ID_ANI_MARIO_FLY_BRACE_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_FLY_RUNNING_RIGHT;
+				else if (ax == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_FLY_WALKING_RIGHT;
+			}
+			else
+			{
+				if (ax > 0)
+					aniId = ID_ANI_MARIO_FLY_BRACE_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_FLY_RUNNING_LEFT;
+				else if (ax == -MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_FLY_WALKING_LEFT;
+			}
+		}
+	}
+
+	if (aniId == -1) aniId = ID_ANI_MARIO_FLY_IDLE_RIGHT;
+	return aniId;
+}
+
 void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
@@ -437,6 +500,8 @@ void CMario::Render()
 
 	if (state == MARIO_STATE_DIE)
 		aniId = ID_ANI_MARIO_DIE;
+	else if (level == MARIO_LEVEL_FLY)
+		aniId = GetAniIdFly();
 	else if (level == MARIO_LEVEL_BIG)
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
@@ -505,6 +570,20 @@ void CMario::SetState(int state)
 		}
 		break;
 
+	case MARIO_STATE_FLYING_RIGHT:
+		isFlying = true;
+		nx = 1;
+		vx = MARIO_WALKING_SPEED;
+		vy = -MARIO_FLYING_SPEED;
+		break;
+
+	case MARIO_STATE_FLYING_LEFT:
+		isFlying = true;
+		nx = -1;
+		vx = -MARIO_WALKING_SPEED;
+		vy = -MARIO_FLYING_SPEED;
+		break;
+
 	case MARIO_STATE_SIT_RELEASE:
 		if (isSitting)
 		{
@@ -548,12 +627,28 @@ void CMario::GetBoundingBox(float& left, float& top, float& right, float& bottom
 			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 		}
 	}
-	else
+	else if (level == MARIO_LEVEL_SMALL)
 	{
 		left = x - MARIO_SMALL_BBOX_WIDTH / 2;
 		top = y - MARIO_SMALL_BBOX_HEIGHT / 2;
 		right = left + MARIO_SMALL_BBOX_WIDTH;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
+	}
+	else {
+		if (isSitting)
+		{
+			left = x - MARIO_FLYING_SITTING_BBOX_WIDTH / 2;
+			top = y - MARIO_FLYING_SITTING_BBOX_HEIGHT / 2;
+			right = left + MARIO_FLYING_SITTING_BBOX_WIDTH;
+			bottom = top + MARIO_FLYING_SITTING_BBOX_HEIGHT;
+		}
+		else
+		{
+			left = x - MARIO_FLYING_BBOX_WIDTH / 2;
+			top = y - MARIO_FLYING_BBOX_HEIGHT / 2;
+			right = left + MARIO_FLYING_BBOX_WIDTH;
+			bottom = top + MARIO_FLYING_BBOX_HEIGHT;
+		}
 	}
 }
 
