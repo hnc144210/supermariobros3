@@ -3,16 +3,12 @@
 #include "PlayScene.h"
 #define BULLET_LIFE_SPAN 3000
 
-CBullet::CBullet(float x, float y, float targetX, float targetY) : CGameObject(x, y) {
-	float dx = targetX - x;
-	float dy = targetY - y;
-	float length = sqrt(dx * dx + dy * dy);
-
-	vx = BULLET_SPEED * dx / length;
-	vy = BULLET_SPEED * dy / length;
-
-	ax = ay = 0;
-	lifeTimeStart = GetTickCount();
+CBullet::CBullet(float x, float y, float vx, float vy) : CGameObject(x, y) {
+	this->vx = vx;
+	this->vy = vy;
+	this->ax = 0;
+	this->ay = 0;
+	this->lifeTimeStart = GetTickCount();
 }
 
 

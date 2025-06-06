@@ -16,7 +16,7 @@ protected:
 	DWORD lifeTimeStart = 0;
 
 public:
-	CBullet(float x, float y, float targetX, float targetY);
+	CBullet(float x, float y, float vx, float vy);
 
 	void Render() override;
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
