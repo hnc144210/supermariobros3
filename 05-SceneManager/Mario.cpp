@@ -17,6 +17,7 @@
 #include "Koopas.h"
 #include "Leaf.h"
 #include "GameData.h"
+#include "PipePortal.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -107,6 +108,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithKoopas(e);
 	else if (dynamic_cast<CLeaf*>(e->obj))
 		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<CPipePortal*>(e->obj))
+		OnCollisionWithPipePortal(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -252,6 +255,34 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e) {
 	SetLevel(MARIO_LEVEL_FLY);
 
 	leaf->Delete();
+}
+
+void CMario::OnCollisionWithPipePortal(LPCOLLISIONEVENT e)
+{
+	CPipePortal* portal = dynamic_cast<CPipePortal*>(e->obj);
+	if (!portal) return;
+
+	CGame* game = CGame::GetInstance();
+
+	int keyDownDir = 0;
+	if (portal->GetDirection() == -1 && game->IsKeyDown(DIK_UP))
+		keyDownDir = -1;
+	else if (portal->GetDirection() == 1 && game->IsKeyDown(DIK_DOWN))
+		keyDownDir = 1;
+
+	if (keyDownDir == portal->GetDirection())
+	{
+		int life = CGameData::GetInstance()->GetLife();
+		int point = CGameData::GetInstance()->GetPoint();
+		int coin = CGameData::GetInstance()->GetCoin();
+
+		CGameData::GetInstance()->SetMarioState(level, life, point, coin);
+		CGameData::GetInstance()->SetCurrentSceneId(portal->GetSceneId());
+
+		portal->MarioEnterPipe();
+		int nextScene = CGameData::GetInstance()->GetCurrentSceneId();
+		CGame::GetInstance()->InitiateSwitchScene(nextScene);
+	}
 }
 
 void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e)

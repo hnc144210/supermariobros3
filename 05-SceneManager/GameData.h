@@ -15,6 +15,7 @@ private:
 	ULONGLONG startTime = 0;
 	DWORD remainTime = 300;
 
+	bool isEnterPipe = false;
 	int savedMarioLevel = 0;
 	int savedLife = 0;
 	int savedPoint = 0;
@@ -47,6 +48,9 @@ public:
 	int GetCurrentSceneId() { return current_scene; };
 	bool IsEntryHiddenMap() { return current_scene == ID_HIDDEN_MAP; }
 	bool IsExitHiddenMap() { return current_scene != ID_HIDDEN_MAP; }
+	void EnterPipe() { this->isEnterPipe = true; }
+	void OutPipe() { this->isEnterPipe = false; }
+	bool IsEnterPipe() { return isEnterPipe; }
 
 	void SetMarioState(int level, int life, int point, int coin);
 	int GetSavedMarioLevel() const { return savedMarioLevel; }

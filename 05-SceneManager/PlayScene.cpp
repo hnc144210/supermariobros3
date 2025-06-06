@@ -23,6 +23,8 @@
 #include "Brick3.h"
 #include "Mario.h"
 #include "Hud.h"
+#include "PipePortal.h"
+#include "GameData.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
@@ -221,6 +223,21 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
+	case OBJECT_TYPE_PIPE_PORTAL:
+	{
+		float x = stof(tokens[1]);
+		float y = stof(tokens[2]);
+		int tunnel_type = stoi(tokens[3]);
+		int sceneId = stoi(tokens[4]);
+		int direction = stoi(tokens[5]);
+		float exitX = stof(tokens[6]);
+		float exitY = stof(tokens[7]);
+
+		CPipePortal* portal = new CPipePortal(x, y, tunnel_type, sceneId, direction, exitX, exitY);
+		objects.push_back(portal);
+		return;
+	}
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
@@ -324,6 +341,24 @@ void CPlayScene::Load()
 	}
 
 	f.close();
+
+	if (player && CGameData::GetInstance()->IsEnterPipe() && (CGameData::GetInstance()->IsExitHiddenMap() || CGameData::GetInstance()->IsEntryHiddenMap()))
+	{
+		CMario* mario = dynamic_cast<CMario*>(player);
+		if (mario)
+		{
+			CGameData* data = CGameData::GetInstance();
+			mario->SetPosition(data->GetRespawnX(), data->GetRespawnY());
+
+			mario->SetLevel(data->GetSavedMarioLevel());
+
+			data->SetLife(data->GetSavedLife());
+			data->SetPoint(data->GetSavedPoint());
+			data->SetCoin(data->GetSavedCoin());
+		}
+
+		CGameData::GetInstance()->OutPipe();
+	}
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }

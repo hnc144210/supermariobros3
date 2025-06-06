@@ -168,6 +168,7 @@
     <ClCompile Include="MysteryBlock.cpp" />
     <ClCompile Include="Paragoomba.cpp" />
     <ClCompile Include="Pipe.cpp" />
+    <ClCompile Include="PipePortal.cpp" />
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayScene.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="MysteryBlock.h" />
     <ClInclude Include="Paragoomba.h" />
     <ClInclude Include="Pipe.h" />
+    <ClInclude Include="PipePortal.h" />
     <ClInclude Include="PiranhaPlant.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayScene.h" />
