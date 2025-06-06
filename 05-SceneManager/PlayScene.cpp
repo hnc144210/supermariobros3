@@ -19,6 +19,8 @@
 #include "Bullet.h"
 #include "Koopas.h"
 #include "Leaf.h"
+#include "Brick2.h"
+#include "Brick3.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -201,6 +203,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	break;
 
+	case OBJECT_TYPE_BRICK2:
+	{
+		obj = new CBrick2(x, y);
+		break;
+	}
+
+	case OBJECT_TYPE_BRICK3:
+	{
+		obj = new CBrick3(x, y);
+		break;
+	}
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
