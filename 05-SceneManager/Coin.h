@@ -14,6 +14,7 @@
 #define COIN_TIME_OUT 200
 
 #define COIN_STATE_ARISE 100
+#define COIN_STATE_IDLE	200
 
 class CCoin : public CGameObject {
 	float ax, ay;
@@ -21,6 +22,7 @@ class CCoin : public CGameObject {
 public:
 	CCoin(float x, float y) : CGameObject(x, y) {
 		ax = ay = 0;
+		SetState(COIN_STATE_IDLE);
 	}
 	void Render() override;
 	void Update(DWORD dt, std::vector<LPGAMEOBJECT>* coObjects) override;

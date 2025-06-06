@@ -21,6 +21,7 @@
 #include "Leaf.h"
 #include "Brick2.h"
 #include "Brick3.h"
+#include "Mario.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):
@@ -340,12 +341,22 @@ void CPlayScene::Update(DWORD dt)
 	player->GetPosition(cx, cy);
 
 	CGame *game = CGame::GetInstance();
+	CMario* mario = (CMario*)player;
 	cx -= game->GetBackBufferWidth() / 2;
-	cy -= game->GetBackBufferHeight() / 2;
+
+
+	if (mario->GetLevel() == MARIO_LEVEL_FLY) {
+		if (cy > 82)
+			cy = 0;
+		else
+			cy -= game->GetBackBufferHeight() / 2;
+	}
+	else
+		cy = 0;
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, cy);
 
 	PurgeDeletedObjects();
 }

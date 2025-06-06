@@ -25,8 +25,10 @@ void CCoin::Update(DWORD dt, std::vector<LPGAMEOBJECT>* coObjects) {
 	vx += ax * dt;
 	vy += ay * dt;
 
-	if (GetTickCount64() - bornTime >= COIN_TIME_OUT) {
-		this->Delete();
+	if (state == COIN_STATE_ARISE) {
+		if (GetTickCount64() - bornTime >= COIN_TIME_OUT) {
+			this->Delete();
+		}
 	}
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -41,6 +43,12 @@ void CCoin::SetState(int state) {
 		vy = -COIN_SPEED;
 		ay = COIN_GRAVITY;
 		bornTime = GetTickCount64();
+		break;
+	}
+	case COIN_STATE_IDLE:
+	{
+		vx = vy = 0;
+		ay = 0;
 		break;
 	}
 	}
