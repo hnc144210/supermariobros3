@@ -28,6 +28,25 @@
 #define ID_ANI_KOOPAS_WAKEUP          16004
 #define ID_ANI_KOOPAS_SPINNING        16005
 
+#define ID_ANI_KOOPAS_GREEN_WALKING_RIGHT   16006
+#define ID_ANI_KOOPAS_GREEN_WALKING_LEFT    16007
+#define ID_ANI_KOOPAS_GREEN_SHELL           16008
+#define ID_ANI_KOOPAS_GREEN_WAKEUP          16009
+#define ID_ANI_KOOPAS_GREEN_SPINNING        16010
+
+#define ID_ANI_KOOPAS_GREEN_WING_WALKING_RIGHT  16011
+#define ID_ANI_KOOPAS_GREEN_WING_WALKING_LEFT   16012
+
+#define KOOPAS_TYPE_RED     0
+#define KOOPAS_TYPE_GREEN   1
+#define KOOPAS_TYPE_GREEN_WING 2
+#define KOOPAS_JUMP_INTERVAL 1500
+#define KOOPAS_JUMP_SPEED 0.5f
+#define KOOPAS_GREEN_WING_SPEED 0.08f
+
+
+
+
 class CKoopas : public CGameObject
 {
 protected:
@@ -42,9 +61,11 @@ protected:
     ULONGLONG wakeup_start = 0;
 
     int direction = -1;
-
+    int type;
+    ULONGLONG jump_start = 0;
+    bool isOnGround = false;
 public:
-    CKoopas(float x, float y);
+    CKoopas(float x, float y, int type);
 
     void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) override;
     void Render() override;

@@ -41,6 +41,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define MAX_SCENE_LINE 1024
 
 
+
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
@@ -185,7 +186,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	case OBJECT_TYPE_KOOPAS:
 	{
-		obj = new CKoopas(x, y);
+		int type = 1;
+
+		if (tokens.size() > 3)
+			type = atoi(tokens[3].c_str());
+		obj = new CKoopas(x, y, type);
 		break;
 	}
 	case OBJECT_TYPE_LEAF:

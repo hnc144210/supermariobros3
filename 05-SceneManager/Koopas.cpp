@@ -8,13 +8,15 @@
 #include "PlayScene.h"
 #include "debug.h"
 
-CKoopas::CKoopas(float x, float y) : CGameObject(x, y)
+CKoopas::CKoopas(float x, float y, int type) : CGameObject(x, y)
 {
+    this->type = type;
     ax = 0;
     ay = KOOPAS_GRAVITY;
     direction = -1;
     SetState(KOOPAS_STATE_WALKING);
 }
+
 
 void CKoopas::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
@@ -31,6 +33,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
     vy += ay * dt;
     vx += ax * dt;
+    isOnGround = false;
 
     if (isDefending && !isWakingUp && GetTickCount64() - defend_start >= KOOPAS_DEFEND_TIMEOUT)
     {
@@ -42,31 +45,64 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
         SetState(KOOPAS_STATE_WALKING);
     }
 
+
     CGameObject::Update(dt, coObjects);
     CCollision::GetInstance()->Process(this, dt, coObjects);
 
-    TurnAround(coObjects);
+
+    if (type == KOOPAS_TYPE_GREEN_WING &&
+        state == KOOPAS_STATE_WALKING &&
+        isOnGround &&
+        GetTickCount64() - jump_start > KOOPAS_JUMP_INTERVAL)
+    {
+        vy = -KOOPAS_JUMP_SPEED;
+        isOnGround = false;
+        jump_start = GetTickCount64();
+    }
+
+    if (type == KOOPAS_TYPE_RED)
+        TurnAround(coObjects);
 }
+
 
 void CKoopas::Render()
 {
     int aniId = -1;
+
     if (isDefending)
     {
         if (isSpinning)
-            aniId = ID_ANI_KOOPAS_SPINNING;
+        {
+            aniId = (type == KOOPAS_TYPE_GREEN) ? ID_ANI_KOOPAS_GREEN_SPINNING : ID_ANI_KOOPAS_SPINNING;
+        }
         else if (isWakingUp)
-            aniId = ID_ANI_KOOPAS_WAKEUP;
+        {
+            aniId = (type == KOOPAS_TYPE_GREEN) ? ID_ANI_KOOPAS_GREEN_WAKEUP : ID_ANI_KOOPAS_WAKEUP;
+        }
         else
-            aniId = ID_ANI_KOOPAS_SHELL;
+        {
+            aniId = (type == KOOPAS_TYPE_GREEN) ? ID_ANI_KOOPAS_GREEN_SHELL : ID_ANI_KOOPAS_SHELL;
+        }
     }
     else
     {
-        aniId = (vx > 0) ? ID_ANI_KOOPAS_WALKING_RIGHT : ID_ANI_KOOPAS_WALKING_LEFT;
+        switch (type)
+        {
+        case KOOPAS_TYPE_GREEN:
+            aniId = (vx > 0) ? ID_ANI_KOOPAS_GREEN_WALKING_RIGHT : ID_ANI_KOOPAS_GREEN_WALKING_LEFT;
+            break;
+        case KOOPAS_TYPE_GREEN_WING:
+            aniId = (vx > 0) ? ID_ANI_KOOPAS_GREEN_WING_WALKING_RIGHT : ID_ANI_KOOPAS_GREEN_WING_WALKING_LEFT;
+            break;
+        default:
+            aniId = (vx > 0) ? ID_ANI_KOOPAS_WALKING_RIGHT : ID_ANI_KOOPAS_WALKING_LEFT;
+            break;
+        }
     }
 
     CAnimations::GetInstance()->Get(aniId)->Render(x, y);
 }
+
 
 void CKoopas::OnNoCollision(DWORD dt)
 {
@@ -81,17 +117,21 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e)
 
     if (!e->obj->IsBlocking()) return;
 
-    if (e->ny != 0) vy = 0;
+    if (e->ny != 0)
+    {
+        vy = 0;
+        isOnGround = true;
+    }
     else if (e->nx != 0 && !isHeld)
     {
         vx = -vx;
         nx = -nx;
     }
 
-
     if (dynamic_cast<CMysteryBlock*>(e->obj))
         OnCollisionWithMysteryBlock(e);
 }
+
 
 void CKoopas::SetState(int state)
 {
@@ -101,7 +141,12 @@ void CKoopas::SetState(int state)
     {
     case KOOPAS_STATE_WALKING:
         isDefending = isSpinning = isHeld = isWakingUp = false;
-        vx = direction * KOOPAS_WALKING_SPEED;
+
+        if (type == KOOPAS_TYPE_GREEN_WING)
+            vx = direction * KOOPAS_GREEN_WING_SPEED;
+        else
+            vx = direction * KOOPAS_WALKING_SPEED;
+
         break;
 
     case KOOPAS_STATE_SHELL:
