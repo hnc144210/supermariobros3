@@ -10,14 +10,16 @@
 #include "Pipe.h"
 #include "MysteryBlock.h"
 #include "Paragoomba.h"
+#include "Hud.h"
 //#include "Koopas.h"
 
 
-class CPlayScene: public CScene
+class CPlayScene : public CScene
 {
-protected: 
+protected:
 	// A play scene has to have player, right? 
-	LPGAMEOBJECT player;					
+	LPGAMEOBJECT player;
+	CHud* hud;
 
 	vector<LPGAMEOBJECT> objects;
 	void _ParseSection_SPRITES(string line);
@@ -27,8 +29,8 @@ protected:
 	void _ParseSection_OBJECTS(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
-	
-public: 
+
+public:
 
 	CPlayScene(int id, LPCWSTR filePath);
 	virtual void Load();
@@ -36,6 +38,8 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	void AddObject(LPGAMEOBJECT obj);
+
+	void UpdateHud(DWORD dt);
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

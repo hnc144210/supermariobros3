@@ -16,6 +16,7 @@
 #include "PiranhaPlant.h"
 #include "Koopas.h"
 #include "Leaf.h"
+#include "GameData.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -29,6 +30,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		untouchable_start = 0;
 		untouchable = 0;
+	}
+
+	ULONGLONG now = GetTickCount64();
+
+	bool isRunning = abs(vx) > MARIO_WALKING_SPEED;
+
+	if (isRunning)
+	{
+		if (now - lastPowerUpdate >= MARIO_POWER_TIME)
+		{
+			if (power < MARIO_POWER_MAX)
+				power++;
+			lastPowerUpdate = now;
+		}
+	}
+	else
+	{
+		if (now - lastPowerUpdate >= MARIO_POWER_TIME)
+		{
+			if (power > 0)
+				power--;
+			lastPowerUpdate = now;
+		}
 	}
 
 	if (holdingKoopas)
@@ -96,6 +120,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 		{
 			goomba->SetState(GOOMBA_STATE_DIE);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			CGameData::GetInstance()->AddPoint(100);
 		}
 	}
 	else // hit by Goomba
@@ -131,11 +156,13 @@ void CMario::OnCollisionWithParagoomba(LPCOLLISIONEVENT e)
 		{
 			paraGoomba->SetState(PARAGOOMBA_STATE_NO_WING);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			CGameData::GetInstance()->AddPoint(200);
 		}
 		else if (state == PARAGOOMBA_STATE_NO_WING)
 		{
 			paraGoomba->SetState(PARAGOOMBA_STATE_DIE);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			CGameData::GetInstance()->AddPoint(100);
 		}
 	}
 	else
@@ -163,12 +190,16 @@ void CMario::OnCollisionWithMysteryBlock(LPCOLLISIONEVENT e) {
 	if (e->ny > 0 && !block->IsUsed())
 	{
 		block->SetState(MYSTERYBLOCK_STATE_UNBOX);
+		CGameData::GetInstance()->AddCoin(1);
+		CGameData::GetInstance()->AddPoint(100);
 	}
 }
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	coin++;
+	CGameData::GetInstance()->AddCoin(1);
+	CGameData::GetInstance()->AddPoint(50);
 }
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
@@ -178,6 +209,7 @@ void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 	{
 		mushroom->SetState(MUSHROOM_STATE_EATEN);
 		SetLevel(MARIO_LEVEL_BIG);
+		CGameData::GetInstance()->AddPoint(1000);
 	}
 }
 void CMario::OnCollisionWithBullet(LPCOLLISIONEVENT e) {
@@ -241,6 +273,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e)
 		{
 			koopa->OnStomp();
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
+			CGameData::GetInstance()->AddPoint(100);
 		}
 	}
 	else if (e->nx != 0)

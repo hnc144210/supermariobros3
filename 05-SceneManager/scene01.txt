@@ -15,6 +15,7 @@ bullet.txt
 leaf.txt
 brick2.txt
 brick3.txt
+hud.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -418,3 +419,6 @@ brick3.txt
 
 #MARIO
 0	20	10
+
+# HUD
+16	130	220

@@ -132,6 +132,9 @@
 
 #define MARIO_UNTOUCHABLE_TIME 2500
 
+#define MARIO_POWER_MAX 6
+#define MARIO_POWER_TIME 200
+
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -147,6 +150,9 @@ class CMario : public CGameObject
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
 	int coin;
+
+	int power;
+	ULONGLONG lastPowerUpdate = 0;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
@@ -176,6 +182,8 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+
+		power = 0;
 	}
 	int GetLevel() { return level; }
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
@@ -198,4 +206,7 @@ public:
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	void HoldKoopas(CKoopas* koopa);
 	void ReleaseKoopas();
+
+	int GetPower() { return power; }
+	bool IsFullPower() { return power == MARIO_POWER_MAX; }
 };

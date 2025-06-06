@@ -22,3 +22,5 @@ height	240
 50	textures\misc3.png
 60	textures\enemies3.png
 70	textures\hidden_map.png
+80	textures\HUD.png
+90	textures\HUD2.png
