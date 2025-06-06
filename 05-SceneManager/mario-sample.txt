@@ -9,7 +9,7 @@ height	240
 0	intro.txt
 1	scene01.txt
 2	scene02.txt
-5	scene0005.txt
+5	hidden_map.txt
 
 # id	file 
 [TEXTURES]
@@ -21,3 +21,4 @@ height	240
 40	textures\misc2.png
 50	textures\misc3.png
 60	textures\enemies3.png
+70	textures\hidden_map.png

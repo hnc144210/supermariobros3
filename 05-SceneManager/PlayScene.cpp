@@ -133,7 +133,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	case OBJECT_TYPE_PLATFORM:
 	{
-
+		int isBlockingAllEdges = 0;
 		float cell_width = (float)atof(tokens[3].c_str());
 		float cell_height = (float)atof(tokens[4].c_str());
 		int length = atoi(tokens[5].c_str());
@@ -142,10 +142,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int sprite_end = atoi(tokens[8].c_str());
 		int isBlocking = atoi(tokens[9].c_str());
 
+		if (tokens.size() > 10)
+			isBlockingAllEdges = atoi(tokens[10].c_str());
+
 		obj = new CPlatform(
 			x, y,
 			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end, isBlocking
+			sprite_begin, sprite_middle, sprite_end, isBlocking, isBlockingAllEdges
 		);
 
 		break;

@@ -1,11 +1,16 @@
+pipe.txt
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 60000	2	27	34	75	50
 60001	2	27	34	59	50
 60002	3	43	33	74	50
+60003	16	0	48	16	70
+60004	48	0	80	16	70
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 12000	60000	100
 12001	60001	100
 12002	60002	100
+12003	60003	100
+12004	60004	100

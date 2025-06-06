@@ -6,11 +6,14 @@
 #define PIPE_BODY_BBOX_HEIGHT 32
 #define PIPE_SHORT_BBOX_HEIGHT 32
 #define PIPE_LONG_BBOX_HEIGHT 48
+#define BLACK_PIPE_BBOX_HEIGHT 16
 
 
 #define ID_ANI_PIPE_LONG 12000
 #define ID_ANI_PIPE_SHORT 12001
 #define ID_ANI_PIPE_BODY 12002
+#define ID_ANI_BLACK_PIPE_BODY 12003
+#define ID_ANI_BLACK_PIPE_HEAD 12004
 
 class CPipe : public CGameObject {
 	int pipe_type;

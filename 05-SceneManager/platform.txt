@@ -81,4 +81,5 @@ id	left	top	right	bottom	texture_id
 1100300	32	96	48	111	40
 #MÂY NHỎ
 1110000	354	243	370	259	20
-
+#GẠCH XANH
+1120000	0	0	16	16	70
