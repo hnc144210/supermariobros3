@@ -73,9 +73,9 @@ void CPiranhaPlant::Render() {
 void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
     float riseHeight = PIRANHA_RISE_HEIGHT;
     if (type == PIRANHA_TYPE_SHOOT_MEDIUM)
-        riseHeight = 35.0f;
-    else if (type == PIRANHA_TYPE_IDLE_LOW)
         riseHeight = 47.0f;
+    else if (type == PIRANHA_TYPE_IDLE_LOW)
+        riseHeight = 40.0f;
 
     if (state == PIRANHA_STATE_RISE) {
         y -= PIRANHA_RISE_SPEED * dt;
@@ -109,7 +109,7 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
             mario->GetPosition(marioX, marioY);
 
             float dx = abs(marioX - x);
-            if ((type != PIRANHA_TYPE_IDLE_LOW && dx <= 10.0f) || type == PIRANHA_TYPE_IDLE_LOW) {
+            if ((type != PIRANHA_TYPE_IDLE_LOW && dx <= 120.0f) || type == PIRANHA_TYPE_IDLE_LOW) {
                 if (GetTickCount() - state_start > PIRANHA_WAIT_TIME) {
                     state_start = GetTickCount();
                     SetState(PIRANHA_STATE_RISE);
@@ -119,7 +119,6 @@ void CPiranhaPlant::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
     }
 
 }
-
 
 
 
