@@ -7,6 +7,7 @@
 #include "Animations.h"
 #include "PlayScene.h"
 #include "debug.h"
+#include "Brick3.h"
 
 CKoopas::CKoopas(float x, float y, int type) : CGameObject(x, y)
 {
@@ -130,6 +131,8 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e)
 
     if (dynamic_cast<CMysteryBlock*>(e->obj))
         OnCollisionWithMysteryBlock(e);
+    if (dynamic_cast<CBrick3*>(e->obj))
+        OnCollisionWithBrick3(e);
 }
 
 
@@ -240,6 +243,14 @@ void CKoopas::OnCollisionWithMysteryBlock(LPCOLLISIONEVENT e)
     {
         block->SetState(MYSTERYBLOCK_STATE_UNBOX);
     }
+}
+
+void CKoopas::OnCollisionWithBrick3(LPCOLLISIONEVENT e)
+{
+    if (!isSpinning || e->nx == 0) return;
+
+    CBrick3* brick = dynamic_cast<CBrick3*>(e->obj);
+    brick->Delete();
 }
 
 void CKoopas::TurnAround(vector<LPGAMEOBJECT>* coObjects) {

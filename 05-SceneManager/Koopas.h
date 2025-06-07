@@ -83,6 +83,7 @@ public:
 
     void OnCollisionWithEnemy(LPCOLLISIONEVENT e);
     void OnCollisionWithMysteryBlock(LPCOLLISIONEVENT e);
+    void OnCollisionWithBrick3(LPCOLLISIONEVENT e);
 
     void TurnAround(vector<LPGAMEOBJECT>* coObjects);
 

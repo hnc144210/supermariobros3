@@ -18,6 +18,7 @@
 #include "Leaf.h"
 #include "GameData.h"
 #include "PipePortal.h"
+#include "RandomItem.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -110,6 +111,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<CPipePortal*>(e->obj))
 		OnCollisionWithPipePortal(e);
+	else if (dynamic_cast<CRandomItem*>(e->obj))
+		OnCollisionWithRandomItem(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -255,6 +258,12 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e) {
 	SetLevel(MARIO_LEVEL_FLY);
 
 	leaf->Delete();
+}
+
+void CMario::OnCollisionWithRandomItem(LPCOLLISIONEVENT e)
+{
+	CRandomItem* item = dynamic_cast<CRandomItem*>(e->obj);
+	item->Delete();
 }
 
 void CMario::OnCollisionWithPipePortal(LPCOLLISIONEVENT e)

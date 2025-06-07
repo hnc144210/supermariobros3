@@ -25,6 +25,7 @@
 #include "Hud.h"
 #include "PipePortal.h"
 #include "GameData.h"
+#include "RandomItem.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
@@ -220,6 +221,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		obj = new CHud(x, y);
 		hud = dynamic_cast<CHud*>(obj);
+		break;
+	}
+
+	case OBJECT_TYPE_RANDOM_ITEM:
+	{
+		obj = new CRandomItem(x, y);
 		break;
 	}
 

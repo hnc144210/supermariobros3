@@ -24,3 +24,5 @@ height	240
 70	textures\hidden_map.png
 80	textures\HUD.png
 90	textures\HUD2.png
+100	textures\HUD3.png
+110	textures\misc4.png

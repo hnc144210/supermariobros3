@@ -16,6 +16,7 @@ leaf.txt
 brick2.txt
 brick3.txt
 hud.txt
+random_item.txt
 #
 [OBJECTS]
 # type	x	y	extra_settings per object type
@@ -417,8 +418,14 @@ hud.txt
 #NỀN ĐẤT
 5	624	192	16	16	29	1010000	1010100	1010200	0
 
+#VIỀN TRẮNG
+5	2682	112	26	26	1	1130000	1130000	1130000	0
+
+#RANDOM ITEM
+18	2682	112
+
 #MARIO
-0	20	10
+0	2580	10
 
 # HUD
 16	130	220

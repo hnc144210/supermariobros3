@@ -83,3 +83,5 @@ id	left	top	right	bottom	texture_id
 1110000	354	243	370	259	20
 #GẠCH XANH
 1120000	0	0	16	16	70
+#VIỀN TRẮNG
+1130000	15	42	41	68	100
